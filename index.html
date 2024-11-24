@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Vela</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.css">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="inicio" id="botonInicio">Iniciar Sistema</div>
+
+    <div class="contenedor-principal">
+        <nav class="navbar">
+            <a href="https://github.com/v3laDev" target="_blank"><i class="fab fa-github"></i></a>
+            <a href="https://discord.gg/Wjfp4x4FnV" target="_blank"><i class="fab fa-discord"></i></a>
+            <a href="https://open.spotify.com/playlist/3n12Fe1RTeBS4KPE5mRq63?si=cc6d1418c57c4a3f" target="_blank"><i class="fab fa-spotify"></i></a>
+        </nav>
+
+        <h1 id="titulo">Vela</h1>
+        <p class="descripcion">17 años, argentino de Buenos Aires. Grey Hat Hacker apasionado por la seguridad informática y la programación en Python. Explorando los límites de la tecnología de manera ética.</p>
+        <button class="conocer-mas" onclick="scrollToCards()">Inyectarme fentanilo (leer mas)</button>
+        <canvas id="particulas"></canvas>
+
+        <h2 class="titulo-cards">Mi Trabajo</h2>
+        <div class="contenido-scroll">
+            <div class="card">
+                <h2>Gaming <i class="fas fa-gamepad"></i></h2>
+                <p>Empecé en el gaming desde muy chico con una PS1, recuerdo haber pasado las mejores horas de mi vida jugando al Grand Theft Auto San Andreas, hasta el día de hoy sigue siendo mi juego favorito de hecho!. Luego, cuando compre mi primer PC, en el 2015 empecé con los hacks, o trampas, así mismo fue como intentando de hacer mis propios Cheats, empecé en el hacking de Minecraft, y desde ese entonces, nunca paré de jugar, y de aprender.</p>
+            </div>
+            <div class="card">
+                <h2>Hacking <i class="fab fa-linux"></i></h2>
+                <p>Empecé en el hacking cómo en el 2019, 2020 por aburrimiento, por querer hacer Cheats para juegos y Raidear servidores de discord, empecé como todo skid, robando códigos hasta que en 2021, me metí de lleno a la ciberseguridad con una carrera.</p>
+            </div>
+            <div class="card">
+                <h2>Python <i class="fab fa-python"></i></h2>
+                <p>El lenguaje que más manejo es Python, para todo tengo un script en él. Me dedico al Pentesting con Python, siendo mi herramienta principal para desarrollar exploits, automatizar pruebas de seguridad y crear herramientas personalizadas para auditorías. La versatilidad y potencia de Python me permite abordar cualquier desafío de seguridad informática de manera eficiente.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('botonInicio').addEventListener('click', function() {
+            this.style.display = 'none';
+            document.querySelector('.contenedor-principal').classList.add('visible');
+            iniciarAnimaciones();
+        });
+
+        function scrollToCards() {
+            const cards = document.querySelector('.titulo-cards');
+            const botonConocerMas = document.querySelector('.conocer-mas');
+            
+            botonConocerMas.classList.add('fadeOut');
+            botonConocerMas.style.pointerEvents = 'none';
+            
+            const duracion = 1500;
+            const inicio = window.scrollY;
+            const destino = cards.offsetTop;
+            const distancia = destino - inicio;
+            let tiempoInicio = null;
+
+            function animacion(tiempoActual) {
+                if (tiempoInicio === null) tiempoInicio = tiempoActual;
+                const tiempoTranscurrido = tiempoActual - tiempoInicio;
+                const porcentaje = Math.min(tiempoTranscurrido / duracion, 1);
+                
+                const easing = t => t<.5 ? 4*t*t*t : (t-1)*(2*t-2)*(2*t-2)+1;
+                
+                window.scrollTo(0, inicio + distancia * easing(porcentaje));
+
+                if (tiempoTranscurrido < duracion) {
+                    requestAnimationFrame(animacion);
+                }
+            }
+
+            requestAnimationFrame(animacion);
+        }
+
+        function iniciarAnimaciones() {
+            const palabra = "vela";
+            let indice = 1;
+            let animacionCompleta = false;
+            
+            function cambiarTitulo() {
+                const titulo = document.getElementById("titulo");
+                titulo.textContent = palabra.substring(0, indice);
+                
+                indice++;
+                if (indice > palabra.length) {
+                    clearInterval(tituloInterval);
+                    animacionCompleta = true;
+                    iniciarParticulas();
+                }
+            }
+
+            const tituloInterval = setInterval(cambiarTitulo, 300);
+
+            function iniciarParticulas() {
+                const canvas = document.getElementById('particulas');
+                const ctx = canvas.getContext('2d');
+                const particulas = [];
+                let mouseX = 0;
+                let mouseY = 0;
+
+                canvas.style.position = 'fixed';
+                canvas.style.top = '0';
+                canvas.style.left = '0';
+                canvas.style.pointerEvents = 'none';
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+
+                window.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                });
+
+                class Particula {
+                    constructor() {
+                        this.reiniciar();
+                    }
+
+                    reiniciar() {
+                        this.x = Math.random() * window.innerWidth;
+                        this.y = Math.random() * window.innerHeight;
+                        this.size = Math.random() * 3;
+                        this.velocidadX = (Math.random() - 0.5) * 3;
+                        this.velocidadY = (Math.random() - 0.5) * 3;
+                    }
+
+                    actualizar() {
+                        const dx = mouseX - this.x;
+                        const dy = mouseY - this.y;
+                        const distancia = Math.sqrt(dx * dx + dy * dy);
+                        
+                        if (distancia < 250) {
+                            this.velocidadX -= dx * 0.002;
+                            this.velocidadY -= dy * 0.002;
+                        }
+
+                        this.x += this.velocidadX;
+                        this.y += this.velocidadY;
+
+                        if (this.x < 0 || this.x > window.innerWidth || 
+                            this.y < 0 || this.y > window.innerHeight) {
+                            this.reiniciar();
+                        }
+
+                        this.velocidadX *= 0.99;
+                        this.velocidadY *= 0.99;
+                    }
+
+                    dibujar() {
+                        ctx.fillStyle = 'rgba(255, 215, 0, 0.6)';
+                        ctx.beginPath();
+                        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+
+                for (let i = 0; i < 200; i++) {
+                    particulas.push(new Particula());
+                }
+
+                function animar() {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    particulas.forEach(p => {
+                        p.actualizar();
+                        p.dibujar();
+                    });
+                    requestAnimationFrame(animar);
+                }
+
+                animar();
+            }
+        }
+
+        // Efecto de movimiento inverso al cursor en las cards
+        document.querySelectorAll('.card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const moveX = (centerX - x) / 20;
+                const moveY = (centerY - y) / 20;
+                
+                card.style.transform = `translate(${moveX}px, ${moveY}px)`;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translate(0, 0)';
+            });
+        });
+
+        window.addEventListener('scroll', function() {
+            const cards = document.querySelectorAll('.card');
+            const titulo = document.getElementById('titulo');
+            const navbar = document.querySelector('.navbar');
+            const tituloCards = document.querySelector('.titulo-cards');
+            const botonConocerMas = document.querySelector('.conocer-mas');
+
+            if (window.scrollY < 50) {
+                botonConocerMas.classList.remove('fadeOut');
+                botonConocerMas.style.pointerEvents = 'auto';
+            } else {
+                botonConocerMas.classList.add('fadeOut');
+                botonConocerMas.style.pointerEvents = 'none';
+            }
+
+            if (window.scrollY > 50) {
+                titulo.style.opacity = '0';
+                navbar.style.opacity = '1';
+                navbar.classList.add('visible');
+            } else {
+                titulo.style.opacity = '1';
+                navbar.style.opacity = '0';
+                navbar.classList.remove('visible');
+            }
+
+            const posicionTituloCards = tituloCards.getBoundingClientRect().top;
+            if (posicionTituloCards < window.innerHeight * 0.75) {
+                tituloCards.classList.add('visible');
+            }
+
+            cards.forEach(card => {
+                const posicionCard = card.getBoundingClientRect().top;
+                if (posicionCard < window.innerHeight * 0.75) {
+                    card.classList.add('visible');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
